@@ -1,4 +1,8 @@
+import 'package:chat_mongodb/services/auth_services.dart';
+import 'package:chat_mongodb/services/socket_service.dart';
+import 'package:chat_mongodb/services/users_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -11,30 +15,48 @@ class UsersPages extends StatefulWidget{
 }
 
 class _UsersPagesState extends State<UsersPages> {
+  final usersService = UsersService();
   RefreshController _refreshController = RefreshController(initialRefresh: false);
-  final users = [
-    User(online: true, email: 'user1@example.com', nombre: 'User1', uid: '1'),
-    User(online: true, email: 'user2@example.com', nombre: 'User2', uid: '2'),
-    User(online: false, email: 'user3@example.com', nombre: 'User3', uid: '3'),
-    User(online: true, email: 'user4@example.com', nombre: 'User4', uid: '4'),
-    User(online: false, email: 'user5@example.com', nombre: 'User5', uid: '5'),
-  ];
+  List<User> users = [];
+
+
+  @override
+  void initState() {
+    _loadUsers();
+    super.initState();
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthServices>(context);
+    final socketService = Provider.of<SocketService>(context);
+    final user = authService.user;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nombre user', style: TextStyle(color: Colors.black54),),
+        title: Text('${user.nombre}', style: TextStyle(color: Colors.black54),),
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.exit_to_app, color: Colors.black54,),
-          onPressed: (){},
+          onPressed: (){
+            // Desconectar del socket server
+            socketService.disconnect();
+
+            //Navega a la pantalla principal
+            Navigator.pushReplacementNamed(context, 'login');
+
+            //Elimina el token
+            AuthServices.deleteToken();
+          },
         ),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 10),
-            child: Icon(Icons.check_circle, color: Colors.green),
+            child: socketService.serverStatus == ServerStatus.Online ?
+                      Icon(Icons.check_circle, color: Colors.green):
+                      Icon(Icons.offline_bolt, color: Colors.red),
           )
         ],
       ),
@@ -76,7 +98,11 @@ class _UsersPagesState extends State<UsersPages> {
   }
 
   void  _loadUsers() async {
-    await Future.delayed(Duration(milliseconds: 1000));
+
+    users = await usersService.getUsers();
+
+    setState(() {});
+
     _refreshController.refreshCompleted();
   }
 }

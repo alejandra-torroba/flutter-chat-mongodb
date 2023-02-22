@@ -1,9 +1,14 @@
+import 'package:chat_mongodb/helpers/mostrar_alerta.dart';
+import 'package:chat_mongodb/services/socket_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:chat_mongodb/services/auth_services.dart';
 import 'package:chat_mongodb/widgets/button.dart';
 import 'package:chat_mongodb/widgets/custom_input.dart';
 import 'package:chat_mongodb/widgets/label.dart';
 import 'package:chat_mongodb/widgets/logo.dart';
+
 
 class SignupPages extends StatelessWidget{
   @override
@@ -46,6 +51,9 @@ class __FormState extends State<_Form>{
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthServices>(context);
+    final socketService = Provider.of<SocketService>(context);
+
     return Container(
         margin: EdgeInsets.only(top: 40),
         padding: EdgeInsets.symmetric(horizontal: 50),
@@ -75,7 +83,18 @@ class __FormState extends State<_Form>{
 
             ButtonBlue(
                 text: 'Registrate',
-                onPressed: () {}
+                onPressed: authService.authenticando ? null : () async {
+                  final registroOk = await authService.signup(nameController.text.trim(), emailController.text.trim(), passwordController.text.trim());
+                  if( registroOk == true ){
+                    //Conectar al socket server
+                    socketService.connect();
+
+                    //Leva a otra pantalla
+                    Navigator.pushReplacementNamed(context, 'users');
+                  }else{
+                    showAlert(context, 'Error al registrarse', registroOk);
+                  }
+                }
             ),
 
           ],

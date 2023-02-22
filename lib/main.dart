@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:chat_mongodb/routes/routes.dart';
+import 'package:chat_mongodb/services/auth_services.dart';
+import 'package:chat_mongodb/services/socket_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,14 +15,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Chat MongoDB',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider( create: ( _ ) => AuthServices() ),
+        ChangeNotifierProvider(create: ( _ ) => SocketService() ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Chat MongoDB',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: 'loading',
+        routes: appRoutes,
       ),
-      initialRoute: 'chat',
-      routes: appRoutes,
     );
   }
 }
