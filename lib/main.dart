@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:chat_mongodb/routes/routes.dart';
 import 'package:chat_mongodb/services/auth_services.dart';
 import 'package:chat_mongodb/services/socket_service.dart';
+import 'package:chat_mongodb/services/chat_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider( create: ( _ ) => AuthServices() ),
         ChangeNotifierProvider(create: ( _ ) => SocketService() ),
+        ChangeNotifierProvider(create: ( _ ) => ChatService() ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

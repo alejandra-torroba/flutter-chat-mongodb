@@ -1,4 +1,5 @@
 import 'package:chat_mongodb/services/auth_services.dart';
+import 'package:chat_mongodb/services/chat_service.dart';
 import 'package:chat_mongodb/services/socket_service.dart';
 import 'package:chat_mongodb/services/users_service.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +20,11 @@ class _UsersPagesState extends State<UsersPages> {
   RefreshController _refreshController = RefreshController(initialRefresh: false);
   List<User> users = [];
 
-
   @override
   void initState() {
     _loadUsers();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +93,11 @@ class _UsersPagesState extends State<UsersPages> {
             borderRadius: BorderRadius.circular(100)
         ),
       ),
+      onTap: (){
+        final chatService = Provider.of<ChatService>(context, listen: false);
+        chatService.userTo = user;
+        Navigator.pushNamed(context, 'chat');
+      },
     );
   }
 
