@@ -22,14 +22,16 @@ class SignupPages extends StatelessWidget{
                 physics: BouncingScrollPhysics(),
                 child: Container(
                     height: MediaQuery.of(context).size.height * 0.9,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Logo(messeger: 'Regristro',),    //LOGO DE LA APLICACIÓN
-                        _Form(),    //EL EMIAL Y LA CONTRASEÑA
-                        const Labels(titulo: '¿Ya tienes cuenta?', msgbutton: 'Entrar', route: 'login',),  //OPCIÓN PARA QUE EL USUARIO SE REGISTRE
-                        const Text('Terminos y condiciones', style: TextStyle(fontWeight: FontWeight.w200),),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Logo(messeger: 'Regristro',),    //LOGO DE LA APLICACIÓN
+                          _Form(),    //EL EMIAL Y LA CONTRASEÑA
+                          const Labels(titulo: '¿Ya tienes cuenta?', msgbutton: 'Entrar', route: 'login',),  //OPCIÓN PARA QUE EL USUARIO SE REGISTRE
+                          const Text('Terminos y condiciones', style: TextStyle(fontWeight: FontWeight.w200),),
+                        ],
+                      )
                     )
                 )
             ),
